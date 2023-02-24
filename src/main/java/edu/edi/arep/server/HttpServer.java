@@ -70,7 +70,8 @@ public class HttpServer {
                     String method = temp.split("\\(")[1].split(",")[1].replace(")", "");
                     System.out.println(method);
                     outputLine = invokeMethod(className, method);
-
+                } else if (command.equals("unaryInvoke")) {
+                    outputLine = unaryInvoke(temp);
                 }
             } else {
                 outputLine = htmlGetForm();
@@ -114,11 +115,22 @@ public class HttpServer {
                 + content;
     }
 
-    public static String htmlClass(String content) {
-        return  "HTTP/1.1 200 OK\r\n"
+    public static String unaryInvoke(String route) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        String className = route.split("\\(")[1].replace(")", "");
+        String method = route.split("\\(")[1].split(",")[1].replace(")", "");
+        String type = route.split("\\(")[1].split(",")[2];
+        String value = route.split("\\(")[1].split(",")[3].replace("%22", "").replace(")","");
+        String content = "";
+        //System.out.println(type);
+        //System.out.println(value);
+        Class<?> c = Class.forName(className);
+        Method classMethod = c.getMethod(method);
+        content = "" + classMethod.invoke(type, value);
+        return "HTTP/1.1 200 OK\r\n"
                 + "Content-Type: text/html\r\n"
                 + "\r\n"
                 + content;
+
     }
 
     public static String htmlGetForm() {
