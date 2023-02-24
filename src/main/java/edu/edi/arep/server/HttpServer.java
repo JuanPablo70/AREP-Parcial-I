@@ -106,7 +106,7 @@ public class HttpServer {
     public static String invokeMethod(String className, String method) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class<?> c = Class.forName(className.split(",")[0]);
         Method classMethod = c.getMethod(method);
-        String content = (String) classMethod.invoke(null);
+        String content = "" + classMethod.invoke(null);
 
         return "HTTP/1.1 200 OK\r\n"
                 + "Content-Type: text/html\r\n"
